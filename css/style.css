@@ -1,0 +1,377 @@
+* {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Open Sans';
+}
+
+body {
+    overflow: hidden;
+}
+
+header {
+    height: 60px;
+
+    display: flex;
+    justify-content: center;
+
+    border-bottom: 1px solid rgba(170, 170, 170, 0.4);
+}
+
+.header-container {
+    width: 60%;
+
+    display: flex;
+    justify-content: center;
+}
+
+.header-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    width: 100%;
+    height: calc(100vh - 60px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app {
+    width: 60%;
+    height: 70vh;
+    border: 1px solid rgba(170, 170, 170, 0.4);
+}
+
+.modal {
+    display: none;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    z-index: 1;
+
+    width: 100%;
+    height: 100%;
+    
+    background-color: rgb(0, 0, 0, 0.2);
+}
+
+.modal-content {
+    background-color: #fff;
+
+    position: relative;
+
+    width: 30%;
+    height: 360px;
+
+    padding: 20px;
+    margin: 61px auto;
+
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.4);
+
+    animation-name: modal-animation;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes modal-animation {
+    from {
+        opacity: 0;
+        top: -200px;
+    }
+    to {
+        opacity: 1;
+        top: 0;
+    }
+}
+
+.modal-header {
+    padding-top: 8px;
+
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.form-wrapper {
+    padding: 10px;
+}
+
+.input-wrapper {
+    padding: 10px;
+}
+
+.input-wrapper input[type=text] {
+    box-sizing: border-box;
+    width: 100%;
+    
+    padding: 10px;
+
+    font-size: 16px;
+    font-weight: 300;
+
+    border: none;
+    border-bottom: 1px solid rgba(170, 170, 170, 0.5);
+    outline: none;
+}
+
+.input-wrapper input[type=text]:focus {
+    border-bottom: 1px solid rgb(80, 80, 80);
+    transition: border-bottom 0.15s ease-in-out;
+}
+
+.input-wrapper input[type=text]:focus::placeholder {
+    color: transparent;
+    transition: color 0.15s ease-in;
+}
+
+.input-wrapper textarea {
+    box-sizing: border-box;
+    width: 100%;
+    height: 160px;
+
+    padding: 10px;
+
+    font-size: 16px;
+
+    border: 1px solid rgba(170, 170, 170, 0.5);
+    resize: none;
+    outline: none;
+}
+
+.input-wrapper textarea:focus {
+    border: 1px solid rgb(80, 80, 80);
+    transition: border 0.15s ease-in-out;
+}
+
+.input-wrapper textarea:focus::placeholder {
+    color: transparent;
+    transition: color 0.15s ease-in;
+}
+
+.add-button {
+    display: block;
+
+    margin-top: 16px;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 120px;
+    height: 40px;
+
+    border: 1px solid rgba(170, 170, 170, 0.8);
+    border-radius: 3px;
+
+    font-size: 16px;
+    outline: none;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    background-color: rgba(224, 224, 224, 0.6);
+    transition: background-color 0.15s ease-in;
+}
+
+.add-button:active {
+    background-color: rgba(224, 224, 224, 1);
+}
+
+.open-modal-button {
+    display: block;
+
+    position: fixed;
+    bottom: 30px;
+    right: 34px;
+
+    width: 56px;
+    height: 56px;
+
+    border-radius: 28px;
+    box-shadow: 0px 2px 7px 1px rgba(0,0,0,0.3);
+
+    background-image: url('../img/add.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-color: rgb(238, 238, 238);
+
+    cursor: pointer;
+}
+
+.open-modal-button:hover {
+    box-shadow: 0px 2px 7px 1px rgba(0,0,0,0.5);
+    background-color: rgb(230, 230, 230);
+    transition: box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.app {
+    display: flex;
+}
+
+.notes-list-container {
+    flex: 3;
+
+    border-right: 1px solid rgba(170, 170, 170, 0.4);
+
+    overflow: auto;
+}
+
+.notes-list-container::-webkit-scrollbar, .note-details::-webkit-scrollbar {
+    width: 10px;
+}
+
+.notes-list-container::-webkit-scrollbar-thumb, .note-details::-webkit-scrollbar-thumb {
+    background: rgb(194, 194, 194);
+    border-radius: 3px;
+}
+
+.notes-list-container::-webkit-scrollbar-track, .note-details::-webkit-scrollbar-track {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgb(194, 194, 194);
+}
+ 
+.notes-list {
+    list-style: none;
+}
+
+.notes-list-item {
+    height: 60px;
+    padding: 10px;
+
+    border-bottom: 1px solid rgba(170, 170, 170, 0.4);
+
+    cursor: pointer;
+}
+
+.notes-list-item:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+.active-note {
+    background-color: rgb(246, 246, 246);
+}
+
+.notes-list-item p:first-child {
+    padding: 4px 0px 10px 10px;
+
+    font-size: 16px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.notes-list-item p:last-child {
+    padding: 0px 0px 10px 10px;
+
+    font-size: 14px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.divider {
+    width: 80%;
+    margin-left: 40px;
+    border-bottom: 1px solid rgba(170, 170, 170, 0.4);
+}
+
+.note-info {
+    flex: 8;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.note-details {
+    flex: 10;
+    overflow: auto;
+}
+
+.note-info-title {
+    padding: 36px 40px 14px 40px;
+
+    font-size: 21px;
+    font-weight: 300;
+}
+
+.note-info-content {
+    padding: 26px 40px 20px 40px;
+
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 28px;
+}
+
+.note-controls {
+    flex: 1;
+
+    width: 100%;
+    height: 60px;
+    
+    border-top: 1px solid rgba(170, 170, 170, 0.4);
+    background-color: #fff;
+
+    display: flex;
+}
+
+.note-controls-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 15px;
+    margin-left: 40px;
+
+    padding-left: 3px;
+    padding-right: 3px;
+    
+    width: 100px;
+    height: 30px;
+
+    border: 1px solid rgba(170, 170, 170, 0.6);
+    border-radius: 3px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.edit-button {
+    margin-left: 20px;
+}
+
+.note-controls-button:hover {
+    background-color: rgb(216, 216, 216);
+}
+
+.note-controls-button:active {
+    background-color: rgb(201, 201, 201);
+}
+
+.button-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}
+
+.delete-icon {
+    background-image: url('../img/delete.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
+}
+
+.edit-icon {
+    background-image: url('../img/edit.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
+}
