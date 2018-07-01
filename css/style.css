@@ -155,7 +155,7 @@ header {
     transition: color 0.15s ease-in;
 }
 
-.add-button {
+.modal-button {
     display: block;
 
     margin-top: 16px;
@@ -173,12 +173,12 @@ header {
     cursor: pointer;
 }
 
-.add-button:hover {
+.modal-button:hover {
     background-color: rgba(224, 224, 224, 0.6);
     transition: background-color 0.15s ease-in;
 }
 
-.add-button:active {
+.modal-button:active {
     background-color: rgba(224, 224, 224, 1);
 }
 
@@ -250,11 +250,11 @@ header {
 }
 
 .notes-list-item:hover {
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(226, 226, 226);
 }
 
 .active-note {
-    background-color: rgb(246, 246, 246);
+    background-color: rgb(240, 240, 240);
 }
 
 .notes-list-item p:first-child {
@@ -320,6 +320,7 @@ header {
     background-color: #fff;
 
     display: flex;
+    align-items: center;
 }
 
 .note-controls-button {
@@ -327,7 +328,6 @@ header {
     justify-content: center;
     align-items: center;
 
-    margin-top: 15px;
     margin-left: 40px;
 
     padding-left: 3px;

@@ -45,7 +45,7 @@ const UIController = (function() {
     }
 
     const state = {
-        modalState: 'add'
+        modalState: null
     }
 
     return {
@@ -65,11 +65,11 @@ const UIController = (function() {
                         <textarea type = 'text' id = 'note-content' placeholder = 'Add some content...'></textarea>
                     </div>
 
-                    <button class = 'add-button'>Добавить</button>
+                    <button class = 'modal-button add-button'>Добавить</button>
                 `;
 
                 document.querySelector(UISelectors.modal).style.display = 'block';
-            } else {
+            } else if (modalState === 'edit') {
                 const form = document.querySelector(UISelectors.noteForm);
 
                 form.innerHTML = `
@@ -81,8 +81,10 @@ const UIController = (function() {
                         <textarea type = 'text' id = 'note-content' placeholder = 'Add some content...'></textarea>
                     </div>
 
-                    <button class = 'edit'>Изменить</button>
+                    <button class = 'modal-button edit'>Изменить</button>
                 `;
+
+                document.querySelector(UISelectors.modal).style.display = 'block';
             }
         },
 
@@ -92,6 +94,7 @@ const UIController = (function() {
 
             if (e.target.classList.contains(modalClass)) {
                 document.querySelector(UISelectors.modal).style.display = 'none';
+                UIController.setModalState(null);
             }
         },
 
@@ -136,6 +139,15 @@ const UIController = (function() {
             list.innerHTML = output;
         },
 
+        removeHighlightAll: function() {
+            let notes = document.querySelectorAll('.notes-list-item');
+            notes = Array.from(notes);
+
+            notes.forEach(note => {
+                note.classList.remove('active-note');
+            })
+        },
+
         showDetailedInfo: function(noteId) {
             const note = NotesController.getNoteById(noteId);
             const noteContainer = document.querySelector(UISelectors.noteDetails);
@@ -171,17 +183,25 @@ const UIController = (function() {
             document.querySelector(UISelectors.noteDetails).innerHTML = '';
         },
 
+        onStartShowNote: function() {
+            const notes = NotesController.getNotes();
+
+            if (notes.length) {
+                UIController.showDetailedInfo(notes[0].id);
+            }
+        },
+
         showModalEdit: function() {
             const note = NotesController.getCurrentNote();
 
-            UIController.setModalState = 'edit';
+            UIController.setModalState('edit');
             UIController.openModal();
 
             document.querySelector(UISelectors.noteTitle).value = note.title;
             document.querySelector(UISelectors.noteContent).value = note.content;
         },
 
-        setModalState: function(type) {
+        setModalState(type) {
             state.modalState = type;
             console.log(state.modalState);
         },
@@ -198,7 +218,7 @@ const UIController = (function() {
 
 })();
 
-// Note Controller
+// Notes Controller
 const NotesController = (function() {
 
     const Note = function(id, title, content) {
@@ -239,14 +259,27 @@ const NotesController = (function() {
             return newNote;
         },
 
-        deleteNote: function() {
-            let currentNote = this.getCurrentNote;
-            let noteIndex = notes.items.findIndex(note => note.id === currentNote.id);
+        deleteNote: function(note) {
+            notes.items.forEach((item, index) => {
+                if (item.id === note.id) {
+                    notes.items.splice(index, 1);
+                }
+            })
 
-            notes.items.splice(noteIndex, 1);
-            notes.currentNote = null;
+            NotesController.setCurrentNote(null);
 
             StorageController.saveNotes(notes.items);
+        },
+
+        updateNote: function(note) {
+            notes.items.forEach((item, index) => {
+                if (item.id === note.id) {
+                    notes.items.splice(index, 1, note);
+                    StorageController.saveNotes(notes.items);
+                }
+            })
+
+            return note.id;
         },
 
         getNotes: function() {
@@ -286,24 +319,40 @@ const App = (function() {
 
         document.querySelector(selectors.openModalButton).addEventListener('click', openModalHandler);
         document.querySelector(selectors.modal).addEventListener('click', UIController.closeModalOutside);
-        document.querySelector(selectors.noteForm).addEventListener('click', createNoteSubmit);
+        document.querySelector(selectors.noteForm).addEventListener('click', createUpdateNote);
         document.querySelector(selectors.notesList).addEventListener('click', noteClickHandler);
         document.querySelector(selectors.noteDetails).addEventListener('click', controlsHandler);
     }
 
-    const createNoteSubmit = function(e) {
+    const createUpdateNote = function(e) {
         if (e.target.classList.contains('add-button')) {
             const note = UIController.getInputData();
 
             if (note.title && note.content) {
-                NotesController.addNote(note);
+                const newNote = NotesController.addNote(note);
                 UIController.refreshNotesList();
+                UIController.showDetailedInfo(newNote.id);
 
                 UIController.clearModalInputFields();
                 UIController.closeModal();
+                UIController.setModalState(null);
             }
 
-            e.preventDefault();
+        } else if (e.target.classList.contains('edit')) {
+            const note = UIController.getInputData();
+
+            if (note.title && note.content) {
+                const noteId = NotesController.getCurrentNote().id;
+                note.id = noteId;
+                
+                NotesController.updateNote(note);
+                UIController.refreshNotesList();
+                UIController.showDetailedInfo(note.id);
+
+                UIController.clearModalInputFields();
+                UIController.closeModal();
+                UIController.setModalState(null);
+            }
         }
     }
 
@@ -317,8 +366,12 @@ const App = (function() {
 
         if (e.target.classList.contains('notes-list-item')) {
             noteId = e.target.id.replace(/note-/, '');
+            UIController.removeHighlightAll();
+            e.target.classList.add('active-note');
         } else if (e.target.parentElement.classList.contains('notes-list-item')) {
             noteId = e.target.parentElement.id.replace(/note-/, '');
+            UIController.removeHighlightAll();
+            e.target.parentElement.classList.add('active-note');
         }
 
         if (noteId !== undefined) {
@@ -329,7 +382,9 @@ const App = (function() {
 
     const controlsHandler = function(e) {
         if (e.target.classList.contains('delete-button')) {
-            NotesController.deleteNote();
+            const note = NotesController.getCurrentNote();
+
+            NotesController.deleteNote(note);
             UIController.refreshNotesList();
             UIController.showBlankInfo();
         }
@@ -342,6 +397,8 @@ const App = (function() {
     return {
         init: function() {
             UIController.refreshNotesList();
+
+            // UIController.onStartShowNote();
 
             loadEventListeners();
         }
